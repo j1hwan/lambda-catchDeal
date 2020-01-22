@@ -191,7 +191,6 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
     end
   
     @browser.quit
-    
   end
   
 end
