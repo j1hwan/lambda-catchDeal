@@ -162,15 +162,12 @@ class HitProductDealBadaJob < ApplicationJob
     
     if Jets.env == "production"
       Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"
-    else
-      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
-    end
-    
-    if Jets.env == "production"
       options = Selenium::WebDriver::Chrome::Options.new(binary:"/opt/bin/chrome/headless-chromium")
     else
+      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
       options = Selenium::WebDriver::Chrome::Options.new
     end
+    
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1280x1696")
@@ -193,7 +190,6 @@ class HitProductDealBadaJob < ApplicationJob
     end
   
     @browser.quit
-    
   end
     
 end

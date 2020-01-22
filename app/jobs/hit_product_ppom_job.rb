@@ -126,15 +126,12 @@ class HitProductPpomJob < ApplicationJob
   
   rate "2 minutes"
   def main_ppom_chrome
-    if Jets.env == "production"
-      Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"
-    else
-      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
-    end
     
     if Jets.env == "production"
+      Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"
       options = Selenium::WebDriver::Chrome::Options.new(binary:"/opt/bin/chrome/headless-chromium")
     else
+      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
       options = Selenium::WebDriver::Chrome::Options.new
     end
     

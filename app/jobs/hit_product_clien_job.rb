@@ -161,16 +161,13 @@ class HitProductClienJob < ApplicationJob
   
   rate "2 minutes"
   def main_clien_chrome
-    if Jets.env == "production"
-      Selenium::WebDriver::Chrome.driver_path = "/home/ubuntu/environment/catch/opt/bin/chrome/chromedriver"
-    else
-      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
-    end
     
     if Jets.env == "production"
+      Selenium::WebDriver::Chrome.driver_path = "/home/ubuntu/environment/catch/opt/bin/chrome/chromedriver"
       options = Selenium::WebDriver::Chrome::Options.new(binary:"/home/ubuntu/environment/catch/opt/bin/chrome/headless-chromium")
       options2 = Selenium::WebDriver::Chrome::Options.new(binary:"/home/ubuntu/environment/catch/opt/bin/chrome/headless-chromium")
     else
+      Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
       options = Selenium::WebDriver::Chrome::Options.new
       options2 = Selenium::WebDriver::Chrome::Options.new
     end
