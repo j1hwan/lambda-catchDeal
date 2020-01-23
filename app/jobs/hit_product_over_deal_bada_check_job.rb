@@ -3,7 +3,7 @@
 
 class HitProductOverDealBadaCheckJob < ApplicationJob
   
-  def data_write(data)
+  def data_modify_deal_bada(data)
     
     @dataArray.each do |currentData|
       puts "[딜바다 Over Check] Process : Data Modify..."
@@ -144,7 +144,7 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
           next
         end
       end
-      data_write(@dataArray)
+      data_modify_deal_bada(@dataArray)
       return 1
     rescue
       # puts "crawl_ppom failStack : #{failStack}"
@@ -158,7 +158,6 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
     end
   end
   
-  rate "2 minutes"
   def main_deal_bada_check_data_chrome
     
     if Jets.env == "production"

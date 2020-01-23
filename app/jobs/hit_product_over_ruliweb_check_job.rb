@@ -3,7 +3,7 @@
 
 class HitProductOverRuliwebCheckJob < ApplicationJob
   
-  def data_write(dataArray)
+  def data_modify_ruliweb(dataArray)
     dataArray.each do |currentData|
       puts "[루리웹 Over Check] Process : Data Modify..."
       @previousData = HitProduct.find_by(url: currentData[9])
@@ -42,7 +42,7 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
   def crawl_ruliweb(index, url, failStack)
   
     begin
-      puts "[뿜뿌(목록 초과) #{index}] 검사 시작!"
+      puts "[루리웹(목록 초과) #{index}] 검사 시작!"
       @dataArray = Array.new
       
       # @current_page = @page.page_stack
@@ -107,7 +107,7 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
           next
         end
       end
-      data_write(@dataArray)
+      data_modify_ruliweb(@dataArray)
       return 1
       
     rescue Timeout::Error
@@ -122,7 +122,6 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
     end
   end
   
-  rate "2 minutes"
   def main_ruliweb_check_data_chrome
     
     if Jets.env == "production"
@@ -149,7 +148,7 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
     @browser = Selenium::WebDriver.for :chrome, options: options # 실레니움 + 크롬 + 헤드리스 옵션으로 브라우저 실행
     
     ### 루리웹 핫딜 게시글 크롤링 (목차탐색 : 1 ~ 3)
-    for index in 1..3
+    for index in 4..7
       @result = crawl_ruliweb(index, "https://bbs.ruliweb.com/market/board/1020?page=#{index}", 0)
       # puts "@result : #{@result}"
     end

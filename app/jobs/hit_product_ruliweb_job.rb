@@ -3,7 +3,7 @@
 
 class HitProductRuliwebJob < ApplicationJob
   
-  def data_write(dataArray)
+  def data_write_ruliweb(dataArray)
     dataArray.each do |currentData|
       puts "[루리웹] Process : Data Writing..."
       @previousData = HitProduct.find_by(url: currentData[9])
@@ -107,7 +107,7 @@ class HitProductRuliwebJob < ApplicationJob
           next
         end
       end
-      data_write(@dataArray)
+      data_write_ruliweb(@dataArray)
       return 1
       
     rescue Timeout::Error
@@ -122,7 +122,6 @@ class HitProductRuliwebJob < ApplicationJob
     end
   end
   
-  rate "2 minutes"
   def main_ruliweb_chrome
     
     if Jets.env == "production"

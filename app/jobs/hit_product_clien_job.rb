@@ -3,7 +3,7 @@
 
 class HitProductClienJob < ApplicationJob
   
-  def collect_last_data(urlId, failStack)
+  def collect_rest_data_clien(urlId, failStack)
     @browser2.navigate().to "https://www.clien.net/service/board/jirum/#{urlId}"
     begin
       time = @browser2.find_element(css: "#div_content > div.post_view > div.post_author > span:nth-child(1)").text
@@ -14,14 +14,14 @@ class HitProductClienJob < ApplicationJob
         return 0
       else
         # puts "재시도..."
-        return collect_last_data(urlId, failStack+1)
+        return collect_rest_data_clien(urlId, failStack+1)
       end
     end
     
     return @browser2
   end
   
-  def data_write(data)
+  def data_write_clien(data)
     data.each do |currentData|
       @previousData = HitProduct.find_by(url: currentData[9])
       puts "[클리앙] Process : Data Writing..."
@@ -85,7 +85,7 @@ class HitProductClienJob < ApplicationJob
         @comment = t.find_element(css: "div.list_title > a > span").text.to_i rescue @comment = 0
         @like = t.find_element(css: 'span.list_votes').text.to_i
         @score = @view/1.5 + @like*400 + @comment*30
-        @urlId = t.find_element(tag_name: "a").attribute("href").split("/").last.split("?").first
+        @urlId = t.find_element(css: "a").attribute("href").split("/").last.split("?").first
         @url = "https://www.clien.net/service/board/jirum/#{@urlId}"
 
         @sailStatus = t.find_element(css: "span.icon_info") rescue @sailStatus = false
@@ -93,7 +93,7 @@ class HitProductClienJob < ApplicationJob
           @sailStatus = true
         end
         
-        @browser2 = collect_last_data(@urlId, 0)
+        @browser2 = collect_rest_data_clien(@urlId, 0)
         
         begin
           redirectUrl = @browser2.find_element(css: "a.url").attribute("href")
@@ -144,7 +144,7 @@ class HitProductClienJob < ApplicationJob
         # @newHotDeal = HitProduct.create(product_id: "clien_#{SecureRandom.hex(6)}", date: @time, title: @title, website: "클리앙", is_sold_out: @sailStatus, view: @view, comment: @comment, like: @like, score: @score, url: @url, image_url: @imageUrl)
       end
       
-      data_write(@dataArray)
+      data_write_clien(@dataArray)
       
       return 1
     rescue Timeout::Error
@@ -159,13 +159,12 @@ class HitProductClienJob < ApplicationJob
     end
   end
   
-  rate "2 minutes"
   def main_clien_chrome
     
     if Jets.env == "production"
-      Selenium::WebDriver::Chrome.driver_path = "/home/ubuntu/environment/catch/opt/bin/chrome/chromedriver"
-      options = Selenium::WebDriver::Chrome::Options.new(binary:"/home/ubuntu/environment/catch/opt/bin/chrome/headless-chromium")
-      options2 = Selenium::WebDriver::Chrome::Options.new(binary:"/home/ubuntu/environment/catch/opt/bin/chrome/headless-chromium")
+      Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"
+      options = Selenium::WebDriver::Chrome::Options.new(binary:"/opt/bin/chrome/headless-chromium")
+      options2 = Selenium::WebDriver::Chrome::Options.new(binary:"/opt/bin/chrome/headless-chromium")
     else
       Selenium::WebDriver::Chrome.driver_path = `which chromedriver-helper`.chomp
       options = Selenium::WebDriver::Chrome::Options.new
