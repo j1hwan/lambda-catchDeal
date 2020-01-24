@@ -15,14 +15,14 @@
 
 ## 2. 해당 Repository와의 연결고리
 * 안드로이드 Repository : https://github.com/samslow/popStarMomi-FE-V2\
-* API 통신 / 소개 페이지 렌더링 / Database Store : https://github.com/kbs4674/catchDeal-BE
+* API 통신 / 소개 페이지 렌더링 / Database Server : https://github.com/kbs4674/catchDeal-BE
 
 
-## 3. 캐치딜 : 전체적인 프로젝트 개요
+## 3. 캐치딜 : 전체적인 백엔드 프로젝트 개요
 1. 커뮤니티에는 매일 갖가지 할인행사에 대한 정보를 사람들이 올리면서 공유한다.
 2. 그런데 커뮤니티 한 곳이 아닌 여러곳에 정보가 퍼져있다.
 3. 그렇다보니 똑같은 정보에 대해 A, C 커뮤니티에는 정보가 있지만, 정작 B 커뮤니티에는 없는 경우가 있다.
-4. 해당 프로젝트의 역할은 각 커뮤니티에서 특가 정보를 크롤링 후, 앱(apk)과의 통신을 위해 JSON 형식으로 웹페이지에 결과물을 띄우는 것을 담당한다.
+4. 백엔드 프로젝트의 역할은 각 커뮤니티에서 특가 정보를 크롤링 후, 앱(apk)과의 통신을 위해 JSON 형식으로 웹페이지에 결과물을 띄우는 것을 담당한다.
 5. 크롤링에 대해선 매 시간 단위로 CronJob을 활용하여 Background Job을 통해 크롤링이 진행된다.
 
 
@@ -46,8 +46,8 @@
 7. ```app/jobs/hit_product_over_ppom_job.rb``` [[hitProductPpomJob]] 뽐뿌 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob)
 8. ```app/jobs/hit_product_over_deal_bada_job.rb``` [[hitProductDealBadaJob]] 딜바다 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob) 
 9. ```app/jobs/auto_delete_job.rb``` [[autoDelete]] 게시글 삭제 트리거 (Background Job + CronJob)
-10. ```app/jobs/alive_check_job.rb``` [[aliveCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job + Enque Background)
-11. ```app/jobs/hit_product_over_clien_check_job.rb``` [[overClienCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job + Enque Background)
+10. ```app/jobs/alive_check_job.rb``` [[aliveCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job)
+11. ```app/jobs/hit_product_over_clien_check_job.rb``` [[overClienCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job)
 
 
 
@@ -66,3 +66,4 @@
 [hitProductOverDealBadaJob]: /app/jobs/hit_product_over_deal_bada_job.rb
 [autoDelete]: /app/jobs/auto_delete_job.rb
 [aliveCheck]: /app/jobs/alive_check_job.rb
+[overClienCheck]: /app/jobs/hit_product_over_clien_check_job.rb
