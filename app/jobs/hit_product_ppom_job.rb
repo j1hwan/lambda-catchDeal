@@ -109,7 +109,7 @@ class HitProductPpomJob < ApplicationJob
         # @newHotDeal = HitProduct.create(product_id: "ppom_#{SecureRandom.hex(6)}", date: @time, title: @title, website: "뿜뿌", is_sold_out: @sailStatus, view: @view, comment: @comment, like: @like, score: @score, url: @url, image_url: @imageUrl)
       end
       
-      data_write_ppom(@dataArray)
+      data_write(@dataArray)
       return 1
       
     rescue Timeout::Error
