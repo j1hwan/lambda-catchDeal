@@ -29,7 +29,7 @@
 ## 4. 해당 Repository 내 Jets 프로젝트의 역할
 1. 기본적으로 크롤링을 담당한다.
 2. AWS Lambda에서는 정해진 Scheduler 시간에 따라 자동으로 크롤링 코드가 있는 함수가 돌아가게 한다.
-
+3. 오전 10시 ~ 오후 23시 사이에 사용자가 등록한 키워드를 기반으로 현 시간~과거 1시간 범위 내 데이터 검색 및 푸쉬알람이 작동되게 한다.
 
 ## 5. 프로젝트 작동 Process
 1. 웹 내 크롤링 스케쥴러 작동 원리
@@ -37,17 +37,18 @@
 
 
 ## 6. 핵심 코드파일
-1. ```app/jobs/hit_product_clien_job.rb``` [[hitProductClienJob]]  클리앙 사이트 크롤링 트리거 (Background Job + CronJob)
-2.  ```app/jobs/hit_product_ruliweb_job.rb``` [[hitProductRuliwebJob]]  루리웹 사이트 크롤링 트리거 (Background Job + CronJob)
-3. ```app/jobs/hit_product_ppom_job.rb``` [[hitProductPpomJob]] 뽐뿌 사이트 크롤링 트리거 (Background Job + CronJob)
-4. ```app/jobs/hit_product_deal_bada_job.rb``` [[hitProductDealBadaJob]] 딜바다 사이트 크롤링 트리거 (Background Job + CronJob)
-5. ```app/jobs/hit_product_over_clien_job.rb``` [[hitProductClienJob]]  클리앙 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob)
-6.  ```app/jobs/hit_product_over_ruliweb_job.rb``` [[hitProductRuliwebJob]]  루리웹 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob)
-7. ```app/jobs/hit_product_over_ppom_job.rb``` [[hitProductPpomJob]] 뽐뿌 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob)
-8. ```app/jobs/hit_product_over_deal_bada_job.rb``` [[hitProductDealBadaJob]] 딜바다 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only (Background Job + CronJob) 
-9. ```app/jobs/auto_delete_job.rb``` [[autoDelete]] 게시글 삭제 트리거 (Background Job + CronJob)
-10. ```app/jobs/alive_check_job.rb``` [[aliveCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job)
-11. ```app/jobs/hit_product_over_clien_check_job.rb``` [[overClienCheck]] 원본 게시글이 삭제되었는지 체크 (Background Job)
+1. ```app/jobs/hit_product_clien_job.rb``` [[hitProductClienJob]]  클리앙 사이트 크롤링 트리거
+2.  ```app/jobs/hit_product_ruliweb_job.rb``` [[hitProductRuliwebJob]]  루리웹 사이트 크롤링 트리거
+3. ```app/jobs/hit_product_ppom_job.rb``` [[hitProductPpomJob]] 뽐뿌 사이트 크롤링 트리거
+4. ```app/jobs/hit_product_deal_bada_job.rb``` [[hitProductDealBadaJob]] 딜바다 사이트 크롤링 트리거
+5. ```app/jobs/hit_product_over_clien_job.rb``` [[hitProductClienJob]]  클리앙 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only
+6.  ```app/jobs/hit_product_over_ruliweb_job.rb``` [[hitProductRuliwebJob]]  루리웹 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only
+7. ```app/jobs/hit_product_over_ppom_job.rb``` [[hitProductPpomJob]] 뽐뿌 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only
+8. ```app/jobs/hit_product_over_deal_bada_job.rb``` [[hitProductDealBadaJob]] 딜바다 사이트에 있어 크롤링/데이터 생성 목차의 다음 목차부터 크롤링/데이터 수정 Only
+9. ```app/jobs/auto_delete_job.rb``` [[autoDelete]] 게시글 삭제 트리거
+10. ```app/jobs/alive_check_job.rb``` [[aliveCheck]] 원본 게시글이 삭제되었는지 체크
+11. ```app/jobs/hit_product_over_clien_check_job.rb``` [[overClienCheck]] 원본 게시글이 삭제되었는지 체크
+12. ```app/jobs/keyword_alarm_job.rb``` [[keywordAlarm]] 오전 10시 ~ 오후 11시 사이에 사용자가 등록한 키워드에 따라 푸쉬알람이 전송됩니다.
 
 
 
@@ -67,3 +68,4 @@
 [autoDelete]: /app/jobs/auto_delete_job.rb
 [aliveCheck]: /app/jobs/alive_check_job.rb
 [overClienCheck]: /app/jobs/hit_product_over_clien_check_job.rb
+[keywordAlarm]: /app/jobs/keyword_alarm_job.rb
