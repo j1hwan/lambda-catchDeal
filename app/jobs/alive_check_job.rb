@@ -2,6 +2,7 @@
 # AliveCheckJob.perform_now(:main)
 
 class AliveCheckJob < ApplicationJob
+  class_timeout 600
   
   def articleCheck(id, url)
     begin

@@ -3,6 +3,7 @@
 # CrawlPlatformAJob.perform_now(:running_crawl)
 
 class CrawlPlatformAJob < ApplicationJob
+  class_timeout 300
   
   ### 뽐뿌  
   def data_write_ppom(dataArray)
