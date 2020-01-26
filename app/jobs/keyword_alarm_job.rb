@@ -17,7 +17,7 @@ class KeywordAlarmJob < ApplicationJob
         # puts "[#{keywordList[0]}] #{alarmUserList}"
         
         ## 물건 탐색 및 알람 전송
-        HitProduct.where(:created_at => Time.now.in_time_zone("Asia/Seoul")-1.hour...Time.now.in_time_zone("Asia/Seoul")).where("title LIKE ?", "%#{keywordList[0]}%").each do |product|
+        HitProduct.where(:created_at => Time.now.in_time_zone("Asia/Seoul")-1.hour...Time.now.in_time_zone("Asia/Seoul"), :is_sold_out => false, :dead_check => false).where("title LIKE ?", "%#{keywordList[0]}%").each do |product|
           alarmUserList.each do |alarmUser|
             # puts "유저 번호 : #{AppUser.find_by(app_player: alarmUser).app_player}"
             # puts "유저 최대 push허용설정 : #{AppUser.find_by(app_player: alarmUser).max_push_count}"
