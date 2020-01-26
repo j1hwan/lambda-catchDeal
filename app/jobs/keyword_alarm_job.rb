@@ -1,7 +1,7 @@
 # KeywordAlarmJob.perform_now(:push_alarm_main)
 
 class KeywordAlarmJob < ApplicationJob
-  rate "1 hour"
+  cron "0 10-23 * * ? *"
   def push_alarm_main
     if Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s >= "10:00" && Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s < "23:50"
       
