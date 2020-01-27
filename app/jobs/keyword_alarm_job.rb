@@ -48,7 +48,7 @@ class KeywordAlarmJob < ApplicationJob
               # puts "Debugging Response : #{response.body}"
               
               ## 푸쉬알람 성공 리스트에 추가
-              KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, hit_product_id: product.id)
+              KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, keyword_title: keywordList[0], hit_product_id: product.id)
             
             else
               next
