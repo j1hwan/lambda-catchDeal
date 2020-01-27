@@ -3,7 +3,7 @@
 class KeywordAlarmJob < ApplicationJob
   class_timeout 300
   
-  cron "0 10-23 * * ? *"
+  cron "0 1-14 * * ? *"
   def push_alarm_main
     if Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s >= "10:00" && Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s < "23:50"
       
@@ -24,7 +24,7 @@ class KeywordAlarmJob < ApplicationJob
             # puts "유저 번호 : #{AppUser.find_by(app_player: alarmUser).app_player}"
             # puts "유저 최대 push허용설정 : #{AppUser.find_by(app_player: alarmUser).max_push_count}"
             
-            if (AppUser.find_by(app_player: alarmUser).alarm_status == true && AppUser.find_by(app_player: alarmUser).max_push_count.to_i > userTotalPushCount["#{alarmUser}"].to_i)
+            if (AppUser.find_by(app_player: alarmUser).alarm_status == true && AppUser.find_by(app_player: alarmUser).max_push_count.to_i > userTotalPushCount["#{alarmUser}"].to_i && KeywordPushalarmList.find_by(hit_product_id: product.id).nil?)
               userTotalPushCount[alarmUser] += 1
               # puts "키워드 : #{keywordList[0]} / alarmUser : #{alarmUser}(#{userTotalPushCount["#{alarmUser}"]}) / title : #{product.title}"
               # puts "hashCounts : #{userTotalPushCount}"
@@ -46,6 +46,9 @@ class KeywordAlarmJob < ApplicationJob
               request.body = params.as_json.to_json
               response = http.request(request)
               # puts "Debugging Response : #{response.body}"
+              
+              ## 푸쉬알람 성공 리스트에 추가
+              KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, hit_product_id: product.id)
             
             else
               next
