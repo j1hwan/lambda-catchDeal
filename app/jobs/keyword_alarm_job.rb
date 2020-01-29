@@ -25,6 +25,7 @@ class KeywordAlarmJob < ApplicationJob
             # puts "유저 최대 push허용설정 : #{AppUser.find_by(app_player: alarmUser).max_push_count}"
             
             if (AppUser.find_by(app_player: alarmUser).alarm_status == true && AppUser.find_by(app_player: alarmUser).max_push_count.to_i > userTotalPushCount["#{alarmUser}"].to_i && KeywordPushalarmList.find_by(hit_product_id: product.id).nil?)
+    
               userTotalPushCount[alarmUser] += 1
               # puts "키워드 : #{keywordList[0]} / alarmUser : #{alarmUser}(#{userTotalPushCount["#{alarmUser}"]}) / title : #{product.title}"
               # puts "hashCounts : #{userTotalPushCount}"
@@ -46,13 +47,12 @@ class KeywordAlarmJob < ApplicationJob
               request.body = params.as_json.to_json
               response = http.request(request)
               # puts "Debugging Response : #{response.body}"
-              
-              ## 푸쉬알람 성공 리스트에 추가
-              KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, keyword_title: keywordList[0], hit_product_id: product.id)
             
             else
               next
             end
+            
+            KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, keyword_title: keywordList[0], hit_product_id: product.id)
             
           end
         end

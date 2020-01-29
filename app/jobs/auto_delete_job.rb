@@ -3,11 +3,29 @@
 
 class AutoDeleteJob < ApplicationJob
 	
-  rate "30 days"
-  def main_auto_delete
+  def hit_product_auto_delete
 		HitProduct.where('created_at < ?', 30.days.ago).each do |x|
 		  x.destroy
 		end
+	end
+	
+  def bookmark_auto_delete
+		BookMark.where('created_at < ?', 60.days.ago).each do |x|
+		  x.destroy
+		end
+	end
+	
+  def pushalarm_list_auto_delete
+		KeywordPushalarmList.where('created_at < ?', 30.days.ago).each do |x|
+		  x.destroy
+		end
+	end
+	
+	rate "24 hours"
+	def main_running
+		hit_product_auto_delete
+		bookmark_auto_delete
+		pushalarm_list_auto_delete
 	end
   
 end
