@@ -8,11 +8,11 @@ default: &default
 
 development:
   <<: *default
-  database: <%= ENV["DB_NAME"] %>_dev
+  database: <%= ENV["DB_NAME"] %>_<%= Jets.env %>
 
 test:
   <<: *default
-  database: <%= ENV["DB_NAME"] %>_test
+  database: <%= ENV["DB_NAME"] %>_<%= Jets.env %>
 
 production:
   <<: *default
