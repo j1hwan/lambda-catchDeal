@@ -27,9 +27,9 @@ class AutoDeleteJob < ApplicationJob
 	
 	rate "24 hours"
 	def main_running
-		hit_product_auto_delete
 		bookmark_auto_delete
 		pushalarm_list_auto_delete
+		hit_product_auto_delete
 	end
   
 end
