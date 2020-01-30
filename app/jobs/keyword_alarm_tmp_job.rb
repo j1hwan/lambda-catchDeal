@@ -1,0 +1,64 @@
+# KeywordAlarmJob.perform_now(:push_alarm_main)
+
+class KeywordAlarmTmpJob < ApplicationJob
+  class_timeout 300
+  
+  cron "0 1-14 * * ? *"
+  def push_alarm_main
+    if Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s >= "10:00" && Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s < "23:50"
+      
+      userTotalPushCount = Hash.new(0)
+      
+      KeywordAlarm.all.eager_load(:app_user).group_by(&:title).each do |keywordList|
+        # puts "keywordList : #{keywordList[0]}"
+        alarmUserList = Array.new
+        
+        keywordList[1].each do |user|
+          alarmUserList << user.app_user.app_player
+        end
+        # puts "[#{keywordList[0]}] #{alarmUserList}"
+        
+        ## 물건 탐색 및 알람 전송
+        HitProduct.where(:created_at => Time.now.in_time_zone("Asia/Seoul")-1.hour...Time.now.in_time_zone("Asia/Seoul"), :is_sold_out => false, :dead_check => false).where("title LIKE ?", "%#{keywordList[0]}%").each do |product|
+          alarmUserList.each do |alarmUser|
+            # puts "유저 번호 : #{AppUser.find_by(app_player: alarmUser).app_player}"
+            # puts "유저 최대 push허용설정 : #{AppUser.find_by(app_player: alarmUser).max_push_count}"
+            
+            if (AppUser.find_by(app_player: alarmUser).alarm_status == true && AppUser.find_by(app_player: alarmUser).max_push_count.to_i > userTotalPushCount["#{alarmUser}"].to_i && KeywordPushalarmList.find_by(hit_product_id: product.id).nil?)
+    
+              userTotalPushCount[alarmUser] += 1
+              # puts "키워드 : #{keywordList[0]} / alarmUser : #{alarmUser}(#{userTotalPushCount["#{alarmUser}"]}) / title : #{product.title}"
+              # puts "hashCounts : #{userTotalPushCount}"
+              
+              ## 특정 대상에게 푸쉬
+              params = {"app_id" => ENV["ONESIGNAL_APP_ID"], 
+                      "headings" => {"en" => "캐치가 [#{keywordList[0]}] 키워드 상품을 물어왔어요!"},
+                      "contents" => {"en" => product.title},
+                      "url" => product.url,
+                      "include_player_ids" => [alarmUser]}
+            
+              uri = URI.parse('https://onesignal.com/api/v1/notifications')
+              http = Net::HTTP.new(uri.host, uri.port)
+              http.use_ssl = true
+              
+              request = Net::HTTP::Post.new(uri.path,
+                                            'Content-Type'  => 'application/json;charset=utf-8',
+                                            'Authorization' => ENV["ONESIGNAL_API_KEY"])
+              request.body = params.as_json.to_json
+              response = http.request(request)
+              # puts "Debugging Response : #{response.body}"
+            
+            else
+              next
+            end
+            
+            KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: alarmUser).id, keyword_title: keywordList[0], hit_product_id: product.id)
+            
+          end
+        end
+      end
+    
+    end
+  end
+  
+end
