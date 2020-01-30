@@ -11,15 +11,16 @@ class KeywordAlarmJob < ApplicationJob
       WHERE exists(
           SELECT keyword_alarms.title FROM keyword_alarms
           LEFT JOIN app_users ON app_users.id = keyword_alarms.app_user_id
-      ) AND hit_products.title LIKE CONCAT('%', keyword_alarms.title, '%');
+      ) AND hit_products.title LIKE CONCAT('%', keyword_alarms.title, '%') AND hit_products.created_at > now() - INTERVAL '1 hour';
     "
     @productData = ActiveRecord::Base.connection.execute(sql)
     
     userTotalPushCount = Hash.new(0)
     @productData.each do |product|
       appUser = AppUser.find(product["app_user_id"])
+      # puts "product : #{product} || appUser: #{appUser.app_player}"
       
-      if (appUser.alarm_status == true && appUser.max_push_count.to_i > userTotalPushCount["#{appUser.app_player}"].to_i && KeywordPushalarmList.find_by(hit_product_id: product["product_id"]).nil?)
+      if (appUser.alarm_status == true && appUser.max_push_count.to_i > userTotalPushCount["#{appUser.app_player}"].to_i && KeywordPushalarmList.find_by(app_user_id: appUser.id).nil?)
         userTotalPushCount[appUser.app_player] += 1
 
         ## 특정 대상에게 푸쉬
@@ -42,6 +43,7 @@ class KeywordAlarmJob < ApplicationJob
       end
       
       KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: appUser.app_player).id, keyword_title: product["keyword_title"], hit_product_id: product["product_id"])
+      puts "[Count] #{userTotalPushCount}"
     end
   end
   
