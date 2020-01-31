@@ -3,7 +3,7 @@
 
 class ChromeCheckJob < ApplicationJob
 	
-	rate "3 hours"
+	rate "1 year"
 	def main_chromium_check_chrome
 		if Jets.env == "production"
 			Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"

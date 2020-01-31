@@ -29,7 +29,7 @@ class AliveCheckJob < ApplicationJob
     
   end
   
-  rate "5 minutes"
+  rate "1 hour"
   def main
     HitProduct.order("date DESC").each do |pageCheck|
       # puts "**[Job count : 1]  페이지 체크 시작"

@@ -601,7 +601,7 @@ class ModifyPlatformAJob < ApplicationJob
   end
   
   
-  rate "5 minutes"
+  rate "1 hour"
   def running_modify_crawl
     if Jets.env == "production"
       Selenium::WebDriver::Chrome.driver_path = "/opt/bin/chrome/chromedriver"

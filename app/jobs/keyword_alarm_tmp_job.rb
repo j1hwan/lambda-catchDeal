@@ -3,7 +3,7 @@
 class KeywordAlarmTmpJob < ApplicationJob
   class_timeout 300
   
-  cron "0 1-14 * * ? *"
+  # cron "0 1-14 * * ? *"
   def push_alarm_main
     if Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s >= "10:00" && Time.now.in_time_zone("Asia/Seoul").strftime('%H:%M').to_s < "23:50"
       

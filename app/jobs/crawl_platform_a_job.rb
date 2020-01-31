@@ -605,7 +605,7 @@ class CrawlPlatformAJob < ApplicationJob
   
   
   ## 모든 플랫폼 크롤링
-  rate "3 minutes"
+  cron "40 * * * ? *"
   def running_crawl
     
     if Jets.env == "production"
