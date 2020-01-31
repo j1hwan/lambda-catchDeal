@@ -20,7 +20,7 @@ class KeywordAlarmJob < ApplicationJob
       appUser = AppUser.find(product["app_user_id"])
       # puts "product : #{product} || appUser: #{appUser.app_player}"
       
-      if (appUser.alarm_status == true && appUser.max_push_count.to_i > userTotalPushCount["#{appUser.app_player}"].to_i && KeywordPushalarmList.find_by(app_user_id: appUser.id).nil?)
+      if (appUser.alarm_status == true && appUser.max_push_count.to_i > userTotalPushCount["#{appUser.app_player}"].to_i && KeywordPushalarmList.find_by(app_user_id: appUser.id, hit_product_id: product["hit_product_id"]).nil?)
         userTotalPushCount[appUser.app_player] += 1
 
         ## 특정 대상에게 푸쉬
@@ -43,7 +43,7 @@ class KeywordAlarmJob < ApplicationJob
       end
       
       KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: appUser.app_player).id, keyword_title: product["keyword_title"], hit_product_id: product["product_id"])
-      puts "[Count] #{userTotalPushCount}"
+      # puts "[Count] #{userTotalPushCount}"
     end
   end
   
