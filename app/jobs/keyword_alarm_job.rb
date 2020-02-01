@@ -15,20 +15,44 @@ class KeywordAlarmJob < ApplicationJob
     "
     @productData = ActiveRecord::Base.connection.execute(sql)
     
+    ## 유저가 몇 개의 키워드 데이터가 저장되었는지 기록하는 변수
     userTotalPushCount = Hash.new(0)
-    @productData.each do |product|
-      appUser = AppUser.find(product["app_user_id"])
-      # puts "product : #{product} || appUser: #{appUser.app_player}"
+    
+    ## 유저별 Hash 생성
+    @productData.field_values("app_user_id").uniq.each do |product|
+      appUser = AppUser.find(product)
       
-      if (appUser.alarm_status == true && appUser.max_push_count.to_i > userTotalPushCount["#{appUser.app_player}"].to_i && KeywordPushalarmList.find_by(app_user_id: appUser.id, hit_product_id: product["hit_product_id"]).nil?)
-        userTotalPushCount[appUser.app_player] += 1
-
-        ## 특정 대상에게 푸쉬
+      userTotalPushCount["#{appUser.app_player}"] = Hash.new(0)
+      userTotalPushCount["#{appUser.app_player}"]["keywordTitle"] = Array.new
+    end
+    
+    ## 데이터베이스에 키워드 수집에 따른 데이터 저장
+    @productData.each_with_index do |product, index|
+      appUser = AppUser.find(product["app_user_id"])
+      
+      userTotalPushCount["#{appUser.app_player}"]["keywordCount"] += 1
+      userTotalPushCount["#{appUser.app_player}"]["keywordTitle"] << product["keyword_title"]
+      
+      KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: appUser.app_player).id, keyword_title: product["keyword_title"], hit_product_id: product["product_id"])
+    end
+    
+    ## 중복 키워드 Title 제거
+    @productData.field_values("app_user_id").uniq.each do |product|
+      appUser = AppUser.find(product)
+      userTotalPushCount["#{appUser.app_player}"]["keywordTitle"].uniq!
+    end
+    
+    # puts "[Count] #{userTotalPushCount}"
+    
+    ## 특정 대상에게 푸쉬알람 전송
+    userTotalPushCount.each do |push|
+      appUser = AppUser.find_by(app_player: push[0])
+      
+      if (appUser.alarm_status == true)
         params = {"app_id" => ENV["ONESIGNAL_APP_ID"], 
-                "headings" => {"en" => "캐치가 [#{product["keyword_title"]}] 키워드 상품을 물어왔어요!"},
-                "contents" => {"en" => product["product_title"]},
-                "url" => product["product_url"],
-                "include_player_ids" => [appUser.app_player]}
+                "headings" => {"en" => "캐치가 [#{push[1]["keywordTitle"].sample(1)[0]}] 키워드 외, 총 #{push[1]["keywordCount"]}개의 핫딜정보를 물어왔어요!"},
+                "contents" => {"en" => "캐치딜 앱에서 확인해보세요!"},
+                "include_player_ids" => [push[0]]}
       
         uri = URI.parse('https://onesignal.com/api/v1/notifications')
         http = Net::HTTP.new(uri.host, uri.port)
@@ -41,9 +65,6 @@ class KeywordAlarmJob < ApplicationJob
         response = http.request(request)
         # puts "Debugging Response : #{response.body}"
       end
-      
-      KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: appUser.app_player).id, keyword_title: product["keyword_title"], hit_product_id: product["product_id"])
-      # puts "[Count] #{userTotalPushCount}"
     end
   end
   
