@@ -1,19 +1,21 @@
 default: &default
   adapter: postgresql
   encoding: utf8
-  host: <%= ENV["DB_HOST"] %>
   username: <%= ENV["USER_NAME"] %>
   password: <%= ENV["USER_PASSWD"] %>
   pool: 5
 
 development:
   <<: *default
+  host: <%= ENV["DB_DEV_HOST"] %>
   database: <%= ENV["DB_NAME"] %>_<%= Jets.env %>
 
 test:
   <<: *default
+  host: <%= ENV["DB_DEV_HOST"] %>
   database: <%= ENV["DB_NAME"] %>_<%= Jets.env %>
 
 production:
   <<: *default
+  host: <%= ENV["DB_HOST"] %>
   database: <%= ENV["DB_NAME"] %>_prd
