@@ -4,7 +4,7 @@ Jets.application.configure do
 
   config.prewarm.enable = true # default is true
   
-  config.function.memory_size = 512
+  config.function.memory_size = 1024
   config.lambda.layers = [
     "arn:aws:lambda:ap-northeast-2:822975145088:layer:chromedriver:20"
   ]
