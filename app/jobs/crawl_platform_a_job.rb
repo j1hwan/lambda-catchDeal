@@ -210,7 +210,7 @@ class CrawlPlatformAJob < ApplicationJob
             docs = Nokogiri::HTML(open(@url))
             redirectUrl = docs.css("div.source_url").text.split("|")[1].gsub(" ", "")
             if redirectUrl.nil? || redirectUrl.empty? || (not redirectUrl.include? "http") || (not redirectUrl.include? "https")
-              redirectUrl = ""
+              redirectUrl = nil
             end
             
             time = docs.css("span.regdate").text.gsub(/\(|\)/, "").to_time - 9.hours
@@ -395,7 +395,7 @@ class CrawlPlatformAJob < ApplicationJob
           end
             
           if redirectUrl.nil? || redirectUrl.empty? || (not redirectUrl.include? "http") || (not redirectUrl.include? "https")
-            redirectUrl = ""
+            redirectUrl = nil
           end
           
           ## Console 확인용
