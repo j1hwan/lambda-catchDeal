@@ -23,6 +23,7 @@ class KeywordAlarmJob < ApplicationJob
       appUser = AppUser.find(product)
       
       userTotalPushCount["#{appUser.app_player}"] = Hash.new(0)
+      userTotalPushCount["#{appUser.app_player}"]["app_player"] = appUser.app_player
       userTotalPushCount["#{appUser.app_player}"]["keywordTitle"] = Array.new
     end
     
@@ -45,14 +46,14 @@ class KeywordAlarmJob < ApplicationJob
     # puts "[Count] #{userTotalPushCount}"
     
     ## 특정 대상에게 푸쉬알람 전송
-    userTotalPushCount.each do |push|
-      appUser = AppUser.find_by(app_player: push[0])
+    userTotalPushCount.values.each do |push|
+      appUser = AppUser.find_by(app_player: push["app_player"])
       
       if (appUser.alarm_status == true)
         params = {"app_id" => ENV["ONESIGNAL_APP_ID"], 
-                "headings" => {"en" => "캐치가 [#{push[1]["keywordTitle"].sample(1)[0]}] 키워드 외, 총 #{push[1]["keywordCount"]}개의 핫딜정보를 물어왔어요!"},
+                "headings" => {"en" => "캐치가 [#{push["keywordTitle"].sample(1)[0]}] 키워드 외, 총 #{push["keywordCount"]}개의 핫딜정보를 물어왔어요!"},
                 "contents" => {"en" => "캐치딜 앱에서 확인해보세요!"},
-                "include_player_ids" => [push[0]]}
+                "include_player_ids" => [push["app_player"]]}
       
         uri = URI.parse('https://onesignal.com/api/v1/notifications')
         http = Net::HTTP.new(uri.host, uri.port)
