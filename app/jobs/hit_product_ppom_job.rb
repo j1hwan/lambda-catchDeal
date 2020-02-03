@@ -77,7 +77,7 @@ class HitProductPpomJob < ApplicationJob
         
         @comment = t.find_element(css: 'span.rp').text.to_i rescue @comment = 0
         @like = @info[1].gsub(" ", "").to_i
-        @score = @view/1.5 + @like*300 + @comment*30
+        @score = ENV["SCORE_PPOM"]
         
         @sailStatus = t.find_element(css: "span.cont > span").attribute("style") rescue @sailStatus = false
         
