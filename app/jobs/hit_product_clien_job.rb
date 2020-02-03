@@ -49,6 +49,8 @@ class HitProductClienJob < ApplicationJob
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
+        elsif (@previousData.is_sold_out == true && currentData[4] == false)
+          @previousData.update(is_sold_out: false)
         end
         
         

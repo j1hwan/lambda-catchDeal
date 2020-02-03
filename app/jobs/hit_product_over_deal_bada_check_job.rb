@@ -32,6 +32,8 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
+        elsif (@previousData.is_sold_out == true && currentData[4] == false)
+          @previousData.update(is_sold_out: false)
         end
         
         
@@ -129,7 +131,7 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
           end
             
           if redirectUrl.nil? || redirectUrl.empty? || (not redirectUrl.include? "http") || (not redirectUrl.include? "https")
-            redirectUrl = ""
+            redirectUrl = nil
           end
           
           ## Console 확인용
@@ -182,14 +184,13 @@ class HitProductOverDealBadaCheckJob < ApplicationJob
     options.add_argument("--ignore-certificate-errors")
     options.add_argument("--homedir=/tmp")
     @browser = Selenium::WebDriver.for :chrome, options: options # 실레니움 + 크롬 + 헤드리스 옵션으로 브라우저 실행
-  
+    
     ### 딜바다 핫딜 게시글 크롤링 (목차탐색 : 1 ~ 2)
     for index in 3..7
       @result = crawl_deal_bada(index, "http://www.dealbada.com/bbs/board.php?bo_table=deal_domestic&page=#{index}", 0)
       # puts "@result : #{@result}"
     end
   
-    @browser.quit
   end
   
 end

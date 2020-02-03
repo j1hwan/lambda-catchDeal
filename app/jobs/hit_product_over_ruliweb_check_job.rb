@@ -74,7 +74,7 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
             docs = Nokogiri::HTML(open(@url))
             redirectUrl = docs.css("div.source_url").text.split("|")[1].gsub(" ", "")
             if redirectUrl.nil? || redirectUrl.empty? || (not redirectUrl.include? "http") || (not redirectUrl.include? "https")
-              redirectUrl = ""
+              redirectUrl = nil
             end
             
             time = docs.css("span.regdate").text.gsub(/\(|\)/, "").to_time - 9.hours
@@ -147,13 +147,12 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
     options.add_argument("--homedir=/tmp")
     @browser = Selenium::WebDriver.for :chrome, options: options # 실레니움 + 크롬 + 헤드리스 옵션으로 브라우저 실행
     
-    ### 루리웹 핫딜 게시글 크롤링 (목차탐색 : 1 ~ 3)
+    ### 루리웹 핫딜 게시글 크롤링 (목차탐색 : 4 ~ 7)
     for index in 4..7
       @result = crawl_ruliweb(index, "https://bbs.ruliweb.com/market/board/1020?page=#{index}", 0)
       # puts "@result : #{@result}"
     end
     
-    @browser.quit
   end
   
 end
