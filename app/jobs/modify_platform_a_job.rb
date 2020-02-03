@@ -35,6 +35,8 @@ class ModifyPlatformAJob < ApplicationJob
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
+        elsif (@previousData.is_sold_out == true && currentData[4] == false)
+          @previousData.update(is_sold_out: false)
         end
         
         
@@ -201,6 +203,8 @@ class ModifyPlatformAJob < ApplicationJob
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
+        elsif (@previousData.is_sold_out == true && currentData[4] == false)
+          @previousData.update(is_sold_out: false)
         end
         
       else
@@ -244,13 +248,13 @@ class ModifyPlatformAJob < ApplicationJob
         @like = @info[1].gsub(" ", "").to_i
         @score = @view/1.5 + @like*300 + @comment*30
         
-        @sailStatus = t.find_element(tag_name: "span.cont > span").attribute("style") rescue @sailStatus = false
+        @sailStatus = t.find_element(css: "span.cont > span").attribute("style") rescue @sailStatus = false
         
         if @sailStatus != false
           @sailStatus = true
         end
         
-        @urlMobile = t.find_element(tag_name: "a").attribute("href")
+        @urlMobile = t.find_element(css: "a").attribute("href")
         @urlExtract = CGI::parse(@urlMobile)
         @urlPostNo = @urlExtract['no'].to_a[0]
         @url = "http://www.ppomppu.co.kr/zboard/view.php?id=ppomppu&no=" + @urlPostNo
@@ -482,6 +486,8 @@ class ModifyPlatformAJob < ApplicationJob
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
+        elsif (@previousData.is_sold_out == true && currentData[4] == false)
+          @previousData.update(is_sold_out: false)
         end
         
         
