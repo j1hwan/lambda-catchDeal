@@ -640,10 +640,10 @@ class CrawlPlatformAJob < ApplicationJob
     @browser = Selenium::WebDriver.for :chrome, options: options # 실레니움 + 크롬 + 헤드리스 옵션으로 브라우저 실행
     @browser2 = Selenium::WebDriver.for :chrome, options: options
     
-    # main_ppom_chrome
+    main_ppom_chrome
     main_ruliweb_chrome
-    # main_clien_chrome
-    # main_deal_bada_chrome
+    main_clien_chrome
+    main_deal_bada_chrome
     
     @browser.quit
   end
