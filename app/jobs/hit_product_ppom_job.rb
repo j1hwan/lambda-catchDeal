@@ -27,7 +27,6 @@ class HitProductPpomJob < ApplicationJob
           @previousData.update(view: currentData[5].to_i, comment: currentData[6].to_i, like: currentData[7].to_i, score: currentData[8].to_i)
         end
         
-        
         ## 판매상태 체크
         if (@previousData.is_sold_out == false && currentData[4] == true)
           @previousData.update(is_sold_out: true)
@@ -36,8 +35,6 @@ class HitProductPpomJob < ApplicationJob
         end
         
       end
-      
-      puts "#{currentData[4]} || #{currentData[2]}"
       
       HitProduct.create(product_id: currentData[0], date: currentData[1], title: currentData[2], website: currentData[3], is_sold_out: currentData[4], view: currentData[5], comment: currentData[6], like: currentData[7], score: currentData[8], url: currentData[9], image_url: currentData[10])
     end
