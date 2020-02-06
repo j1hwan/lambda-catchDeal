@@ -86,7 +86,7 @@ class HitProductClienJob < ApplicationJob
         @view = t.find_element(css: 'span.hit').text.to_i
         @comment = t.find_element(css: "div.list_title > a > span").text.to_i rescue @comment = 0
         @like = t.find_element(css: 'span.list_votes').text.to_i
-        @score = ENV["SCORE_CLIEN"]
+        @score = eval(ENV["SCORE_CLIEN"])
         @urlId = t.find_element(css: "a").attribute("href").split("/").last.split("?").first
         @url = "https://www.clien.net/service/board/jirum/#{@urlId}"
 

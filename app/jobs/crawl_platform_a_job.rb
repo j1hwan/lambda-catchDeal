@@ -78,7 +78,7 @@ class CrawlPlatformAJob < ApplicationJob
         
         @comment = t.find_element(css: 'span.rp').text.to_i rescue @comment = 0
         @like = @info[1].gsub(" ", "").to_i
-        @score = ENV["SCORE_PPOM"]
+        @score = eval(ENV["SCORE_PPOM"])
         
         @sailStatus = t.find_element(css: "span.cont > span").attribute("style") rescue @sailStatus = false
         
@@ -199,7 +199,7 @@ class CrawlPlatformAJob < ApplicationJob
           @view = t.find_element(css: 'td.hit').text.to_i
           @comment = t.find_element(css: "td.subject > div.relative > span.num_reply > span.num").text.to_i rescue @comment = 0
           @like = t.find_element(css: 'td.recomd > span').text.to_i rescue @like = 0
-          @score = ENV["SCORE_RULIWEB"]
+          @score = eval(ENV["SCORE_RULIWEB"])
           @url = t.find_element(css: "a.deco").attribute("href")
           @url = @url.gsub("https://bbs.ruliweb.com", "https://m.ruliweb.com").gsub("?page=#{index}", "")
   
@@ -346,7 +346,7 @@ class CrawlPlatformAJob < ApplicationJob
           @view = t.find_element(css: 'td:nth-child(7)').text.to_i
           @comment = @titleContent.split("\n")[1].to_i rescue @comment = 0
           @like = t.find_element(css: 'td.td_num_g > span:nth-child(1)').text.to_i
-          @score = ENV["SCORE_DEALBADA"]
+          @score = eval(ENV["SCORE_DEALBADA"])
           @url = t.find_element(css: "td.td_subject > a").attribute("href").gsub("&page=#{index}", "")
   
           @sailStatus = t.find_element(css: "td.td_subject > a > img") rescue @sailStatus = false
@@ -523,7 +523,7 @@ class CrawlPlatformAJob < ApplicationJob
         @view = t.find_element(css: 'span.hit').text.to_i
         @comment = t.find_element(css: "div.list_title > a > span").text.to_i rescue @comment = 0
         @like = t.find_element(css: 'span.list_votes').text.to_i
-        @score = ENV["SCORE_CLIEN"]
+        @score = eval(ENV["SCORE_CLIEN"])
         @urlId = t.find_element(css: "a").attribute("href").split("/").last.split("?").first
         @url = "https://www.clien.net/service/board/jirum/#{@urlId}"
 

@@ -61,7 +61,7 @@ class HitProductOverRuliwebCheckJob < ApplicationJob
           @view = t.find_element(css: 'td.hit').text.to_i
           @comment = t.find_element(css: "td.subject > div.relative > span.num_reply > span.num").text.to_i rescue @comment = 0
           @like = t.find_element(css: 'td.recomd > span').text.to_i rescue @like = 0
-          @score = ENV["SCORE_RULIWEB"]
+          @score = eval(ENV["SCORE_RULIWEB"])
           @url = t.find_element(css: "a.deco").attribute("href")
           @url = @url.gsub("https://bbs.ruliweb.com", "https://m.ruliweb.com").gsub("?page=#{index}", "")
   
