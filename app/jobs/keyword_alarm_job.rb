@@ -32,6 +32,7 @@ class KeywordAlarmJob < ApplicationJob
       appUser = AppUser.find(product["app_user_id"])
       
       userTotalPushCount["#{appUser.app_player}"]["keywordCount"] += 1
+      userTotalPushCount["#{appUser.app_player}"]["productTitle"] = product["product_title"]
       userTotalPushCount["#{appUser.app_player}"]["keywordTitle"] << product["keyword_title"]
       
       KeywordPushalarmList.create(app_user_id: AppUser.find_by(app_player: appUser.app_player).id, keyword_title: product["keyword_title"], hit_product_id: product["product_id"])
@@ -43,7 +44,7 @@ class KeywordAlarmJob < ApplicationJob
       userTotalPushCount["#{appUser.app_player}"]["keywordTitle"].uniq!
     end
     
-    # puts "[Count] #{userTotalPushCount}"
+    puts "[Count] #{userTotalPushCount}"
     
     ## 특정 대상에게 푸쉬알람 전송
     userTotalPushCount.values.each do |push|
@@ -52,7 +53,7 @@ class KeywordAlarmJob < ApplicationJob
       if (appUser.alarm_status == true)
         params = {"app_id" => ENV["ONESIGNAL_APP_ID"], 
                 "headings" => {"en" => "캐치가 [#{push["keywordTitle"].sample(1)[0]}] 키워드 외, 총 #{push["keywordCount"]}개의 핫딜정보를 물어왔어요!"},
-                "contents" => {"en" => "캐치딜 앱에서 확인해보세요!"},
+                "contents" => {"en" => push["productTitle"]},
                 "include_player_ids" => [push["app_player"]]}
       
         uri = URI.parse('https://onesignal.com/api/v1/notifications')
