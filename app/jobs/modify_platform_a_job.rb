@@ -3,7 +3,7 @@
 # ModifyPlatformAJob.perform_now(:running_modify_crawl)
 
 class ModifyPlatformAJob < ApplicationJob
-  class_timeout 300
+  class_timeout 420
   
   ### 딜바다
   def data_modify_deal_bada(data)
